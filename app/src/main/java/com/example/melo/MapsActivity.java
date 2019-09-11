@@ -15,14 +15,26 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -45,6 +57,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onClick(View view) {
                 if ( mMap != null ) {
+                    /*
                     Toast
                             .makeText(getBaseContext(), "Latitude: "
                                     + mMap.getCameraPosition().target.latitude
@@ -52,12 +65,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                     + mMap.getCameraPosition().target.longitude,
                                     Toast.LENGTH_LONG
                             ).show();
-                    Log.d("melo", "latitude: " + mMap.getCameraPosition().target.latitude );
-                    Log.d("melo", "longitude: " + mMap.getCameraPosition().target.longitude );
+                            */
+                    double lat = mMap.getCameraPosition().target.latitude;
+                    double lon = mMap.getCameraPosition().target.longitude;
+                    guardarDatosEnBd(lat, lon);
+                    //Aunt();
+                    Log.d("melo_consola", "latitude: " + mMap.getCameraPosition().target.latitude );
+                    Log.d("melo_consola", "longitude: " + mMap.getCameraPosition().target.longitude );
                 }
 
             }
         });
+
+        getDatos();
 
     }
 
@@ -99,6 +119,77 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
 
+    }
+int i = 0;
+//metodo para generar puntos
+    public void Aunt (){
+
+        i++;
+        LatLng punto_accidente = new LatLng(mMap.getCameraPosition().target.latitude , mMap.getCameraPosition().target.longitude);
+        mMap.addMarker(new MarkerOptions().position(punto_accidente).title("Accidente #"+i).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+
+
+
+    }
+
+    private void guardarDatosEnBd(final double lon, final double lat)
+    {
+        String url_preticion = "http://172.16.160.110/anime/proyecto/set_datos.php";
+        StringRequest strReq = new StringRequest(Request.Method.POST, url_preticion, response ->
+        {
+            Log.e("melo_consola", "peticion ejecutada correctamente" );
+            getDatos();
+        }, error -> {
+            Log.e("melo_consola", error.getMessage() );
+            Log.e("melo_consola", "error en volley" );
+        }){
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("longitude", String.valueOf( lon ) );
+                params.put("latitude", String.valueOf( lat ) );
+
+                return params;
+            }
+        };
+        MySingleton.getInstance(this).addToRequestQueue(strReq);
+    }
+
+    private void getDatos()
+    {
+        String url_preticion = "http://172.16.160.110/anime/proyecto/consulta.php";
+        StringRequest strReq = new StringRequest(Request.Method.POST, url_preticion, response ->
+        {
+            Log.e("melo_consola", response );
+
+            try {
+                JSONArray datos = new JSONArray( response );
+                for ( int i = 0; i < datos.length(); i++ )
+                {
+                    JSONObject actual = datos.getJSONObject( i );
+                    imprimirEnMapa(
+                            actual.getInt("id"),
+                            Double.parseDouble(actual.getString("latitude")),
+                            Double.parseDouble(actual.getString("longitude"))
+                    );
+                    Log.e("melo_consola", actual.toString() );
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+
+        }, error -> {
+            Log.e("melo_consola", error.getMessage() );
+            Log.e("melo_consola", "error en volley" );
+        });
+        MySingleton.getInstance(this).addToRequestQueue(strReq);
+    }
+
+    private void imprimirEnMapa( int id,  double lon, double lat )
+    {
+        LatLng punto_accidente = new LatLng( lat , lon);
+        mMap.addMarker(new MarkerOptions().position(punto_accidente).title("Accidente # " + id ).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
     }
 
 }
