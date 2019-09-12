@@ -25,6 +25,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
@@ -48,14 +51,49 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 double lat = mMap.getCameraPosition().target.latitude;
                 double lon = mMap.getCameraPosition().target.longitude;
 
+                guardarDatosEnBd(
+                        lon,
+                        lat,
+                        1
+                );
+                /*
                 Intent v = new Intent(getBaseContext(), ColorActivity.class);
                 v.putExtra("latitude", lat);
                 v.putExtra("longitude", lon);
                 startActivity( v );
+                */
             }
 
         });
 
+    }
+
+    private void guardarDatosEnBd(final double lon, final double lat, int color)
+    {
+        String url_preticion = "http://172.16.160.110/anime/proyecto/set_datos.php";
+        StringRequest strReq = new StringRequest(Request.Method.POST, url_preticion,
+                response -> {
+                    Log.e("melo_consola", "peticion ejecutada correctamente" );
+                    getDatos();
+
+                },
+                error ->
+                {
+                    if ( error != null && error.getMessage() != null ) {
+                        Log.e("melo_consola", error.getMessage());
+                    }
+                    Log.e("melo_consola", "error en volley" );
+                }){
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("longitude", String.valueOf( lon ) );
+                params.put("latitude", String.valueOf( lat ) );
+                params.put("color", String.valueOf( color ) );
+                return params;
+            }
+        };
+        MySingleton.getInstance(this).addToRequestQueue(strReq);
     }
 
     private void getDatos()
