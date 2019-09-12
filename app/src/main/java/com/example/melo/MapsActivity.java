@@ -1,7 +1,6 @@
 package com.example.melo;
 
 import android.Manifest;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -104,6 +103,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Log.e("melo_consola", response );
             try {
                 JSONArray datos = new JSONArray( response );
+                mMap.clear();
                 for ( int i = 0; i < datos.length(); i++ )
                 {
                     JSONObject actual = datos.getJSONObject( i );
@@ -113,7 +113,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             actual.getLong("longitude"),
                             actual.getInt("color")
                     );
-                    Log.e("melo_consola", actual.toString() );
+                    //Log.e("melo_consola", actual.toString() );
                 }
             } catch (JSONException e) {
                 if (e.getMessage() != null) {
@@ -132,20 +132,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void imprimirEnMapa( int id , double longitude , double latitude , int color) {
         LatLng ubicacion = new LatLng( latitude , longitude);
+        Log.e("melo_consola", "IMPRIMIO PUNTO # " + id );
         switch (color){
             case 1:
                 mMap.addMarker(new MarkerOptions().position(ubicacion).title("Accidente #" + id ).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-                //mMap.addMarker(new MarkerOptions().position(punto_accidente).title("Accidente # " + id ).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+                Log.e("melo_consola", "IMPRIMIO COLOR 1" );
                 break;
             case 2 :
                 mMap.addMarker(new MarkerOptions().position(ubicacion).title("Accidente #" + id ).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
-                //mMap.addMarker(new MarkerOptions().position(punto_accidente).title("Accidente # " + id ).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+                Log.e("melo_consola", "IMPRIMIO COLOR 2" );
                 break;
             case 3 :
                 mMap.addMarker(new MarkerOptions().position(ubicacion).title("Accidente #" + id ).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
-                //mMap.addMarker(new MarkerOptions().position(punto_accidente).title("Accidente # " + id ).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+                Log.e("melo_consola", "IMPRIMIO COLOR 3" );
                 break;
         }
+        Log.e("melo_consola", " " );
     }
 
     /**
