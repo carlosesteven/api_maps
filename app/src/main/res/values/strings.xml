@@ -21,4 +21,8 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+
+    <string name="url_guardar">http://192.168.1.100/app/accidentes/set_datos.php</string>
+    <string name="url_consultar">http://192.168.1.100/app/accidentes/get_datos.php</string>
+
 </resources>
