@@ -1,7 +1,8 @@
 package com.example.melo.UI;
 
-import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +15,7 @@ import androidx.fragment.app.FragmentActivity;
 
 import com.android.volley.Request;
 import com.android.volley.toolbox.StringRequest;
+import com.example.melo.ColorActivity;
 import com.example.melo.R;
 import com.example.melo.VOLLEY.MySingleton;
 import com.google.android.gms.common.ConnectionResult;
@@ -35,14 +37,23 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.example.melo.Util.ConsolaDebug;
+import static com.example.melo.Util.ConsolaDebugError;
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
 
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
     private Location mLastKnownLocation;
+    // CORDENADAS DE CALI
     private LatLng mDefaultLocation = new LatLng(3.4372201,-76.5224991);
     private CameraPosition mCameraPosition;
     private boolean mLocationPermissionGranted;
+
+    // NIVEL DE ZOOM POR DEFECTO
+    private final float DEFAULT_ZOOM = 18;
+
+    private boolean lanzoMapa = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,39 +76,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             getDeviceLocation();
             if ( mLastKnownLocation != null )
             {
+
+                Intent color = new Intent( getBaseContext(), ColorActivity.class);
+                color.putExtra( "longitud", mLastKnownLocation.getLongitude() );
+                color.putExtra( "latitud", mLastKnownLocation.getLatitude() );
+                startActivity( color );
+                /*
                 guardarDatosEnBd(
                         1
                 );
+                */
             }
         });
 
-    }
-
-    private void guardarDatosEnBd(int color)
-    {
-        String url_preticion = getString(R.string.url_guardar);
-        StringRequest strReq = new StringRequest(Request.Method.POST, url_preticion,
-                response -> {
-                    Log.e("melo_consola", "peticion ejecutada correctamente" );
-                    getDatos();
-                },
-                error ->
-                {
-                    if ( error != null && error.getMessage() != null ) {
-                        Log.e("melo_consola", error.getMessage());
-                    }
-                    Log.e("melo_consola", "error en volley" );
-                }){
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                params.put("longitud", String.valueOf( mLastKnownLocation.getLongitude() ) );
-                params.put("latitud", String.valueOf( mLastKnownLocation.getLatitude() ) );
-                params.put("color", String.valueOf( color ) );
-                return params;
-            }
-        };
-        MySingleton.getInstance(this).addToRequestQueue(strReq);
     }
 
     private void getDatos()
@@ -105,7 +96,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         String url_preticion = getString(R.string.url_consultar);
         StringRequest strReq = new StringRequest(Request.Method.POST, url_preticion, response ->
         {
-            Log.e("melo_consola", response );
             try {
                 JSONArray datos = new JSONArray( response );
                 for ( int i = 0; i < datos.length(); i++ )
@@ -113,23 +103,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     JSONObject actual = datos.getJSONObject( i );
                     imprimirEnMapa(
                             actual.getInt("id"),
-                            actual.getLong("latitud"),
-                            actual.getLong("longitud"),
+                            Double.parseDouble( actual.getString("latitud") ),
+                            Double.parseDouble( actual.getString("longitud") ),
                             actual.getInt("color")
                     );
-                    //Log.e("melo_consola", actual.toString() );
+                    ConsolaDebug("resultados ciclo", actual.toString() );
                 }
             } catch (JSONException e) {
                 if (e.getMessage() != null) {
-                    Log.e("melo_consola", e.getMessage());
+                    ConsolaDebugError("melo_consola", e.getMessage());
                 }
                 e.printStackTrace();
             }
         }, error -> {
             if ( error != null && error.getMessage() != null ) {
-                Log.e("melo_consola", error.getMessage());
+                ConsolaDebugError("melo_consola", error.getMessage());
             }
-            Log.e("melo_consola", "error en volley" );
+            ConsolaDebugError("melo_consola", "error en volley" );
         });
         MySingleton.getInstance(this).addToRequestQueue(strReq);
     }
@@ -149,16 +139,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    /**
-     * EVENTO DE ANDROID EN EL CICLO DE VIDA
-     * - SE EJECUTA CADA VEZ QUE EL USUARIO ENTRA AL ACTIVITY O VUELVE DE OTRA
-     */
-    @Override
-    protected void onResume() {
-        super.onResume();
-        //getDatos();
-    }
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -172,6 +152,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         getDeviceLocation();
 
         getDatos();
+
+        lanzoMapa = true;
     }
 
     @Override
@@ -228,8 +210,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     .getLastLocation(mGoogleApiClient);
         }
 
-        // Set the map's camera position to the current location of the device.
-        float DEFAULT_ZOOM = 17;
         /*
         if (mCameraPosition != null) {
             mMap.moveCamera(CameraUpdateFactory.newCameraPosition(mCameraPosition));
@@ -239,13 +219,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                     new LatLng(mLastKnownLocation.getLatitude(),
                             mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
-             mMap.addMarker(new MarkerOptions().position(new LatLng(mLastKnownLocation.getLatitude(),
-                     mLastKnownLocation.getLongitude())).title("TU" ).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+            //mMap.addMarker(new MarkerOptions().position(new LatLng(mLastKnownLocation.getLatitude(),
+            //         mLastKnownLocation.getLongitude())).title("TU" ).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
         } else {
-            Log.d("melo_consola", "Current location is null. Using defaults.");
+             ConsolaDebug("melo_consola", "Current location is null. Using defaults.");
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation, 9));
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if ( lanzoMapa )
+            getDatos();
+    }
 }
