@@ -1,6 +1,8 @@
 package com.example.melo;
 
+import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 public class Util {
 
@@ -33,5 +35,20 @@ public class Util {
         }
 
     }
+
+    public static void MensajeToast(Context ctx, String msg)
+    {
+
+        if ( msg != null && !msg.isEmpty() )
+        {
+            Toast.makeText(
+                    ctx,
+                    msg,
+                    Toast.LENGTH_LONG
+            ).show();
+        }
+
+    }
+
 
 }

@@ -1,5 +1,6 @@
 package com.example.melo.UI;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -10,6 +11,7 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
@@ -29,6 +31,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,6 +42,7 @@ import java.util.Map;
 
 import static com.example.melo.Util.ConsolaDebug;
 import static com.example.melo.Util.ConsolaDebugError;
+import static com.example.melo.Util.MensajeToast;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
 
@@ -50,10 +54,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private CameraPosition mCameraPosition;
     private boolean mLocationPermissionGranted;
 
-    // NIVEL DE ZOOM POR DEFECTO
-    private final float DEFAULT_ZOOM = 18;
-
     private boolean lanzoMapa = false;
+
+    private final int CODIGO_GPS = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +91,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 */
             }
         });
+
+        Button informacion = findViewById(R.id.info);
+
+        informacion.setOnClickListener(
+                view -> startActivity(new Intent(getBaseContext(),Informacion.class))
+        );
 
     }
 
@@ -142,6 +151,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
+        //Seteamos el tipo de mapa
+        //mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
 
         // Do other setup activities here too, as described elsewhere in this tutorial.
 
@@ -203,6 +215,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             mLocationPermissionGranted = true;
+        }else{
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    CODIGO_GPS
+            );
         }
 
         if (mLocationPermissionGranted) {
@@ -216,7 +234,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         } else
             */
          if (mLastKnownLocation != null) {
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+             // NIVEL DE ZOOM POR DEFECTO
+             float DEFAULT_ZOOM = 18;
+             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                     new LatLng(mLastKnownLocation.getLatitude(),
                             mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
             //mMap.addMarker(new MarkerOptions().position(new LatLng(mLastKnownLocation.getLatitude(),
@@ -234,4 +254,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if ( lanzoMapa )
             getDatos();
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions, @NonNull int[] grantResults) {
+        // If request is cancelled, the result arrays are empty.
+        if (requestCode == CODIGO_GPS) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getDeviceLocation();
+            } else {
+                ActivityCompat.requestPermissions(
+                        this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        CODIGO_GPS
+                );
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request.
+        }
+    }
+
 }
