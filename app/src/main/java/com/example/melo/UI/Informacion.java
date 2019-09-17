@@ -15,7 +15,7 @@ public class Informacion extends AppCompatActivity {
         setContentView(R.layout.activity_informacion);
 
         WebView web = findViewById( R.id.web );
-        web.loadUrl("http://172.16.160.72:8080/paso_a_seguir.html");
+        web.loadUrl("http://172.16.160.110/app/accidentes/html/paso_a_seguir.html");
 
 
     }
