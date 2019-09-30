@@ -27,9 +27,9 @@ public class VolleyMultipartRequest extends Request<NetworkResponse> {
     private Map<String, String> mHeaders;
 
 
-    public VolleyMultipartRequest(int method, String url,
-                                  Response.Listener<NetworkResponse> listener,
-                                  Response.ErrorListener errorListener) {
+    protected VolleyMultipartRequest(int method, String url,
+                                     Response.Listener<NetworkResponse> listener,
+                                     Response.ErrorListener errorListener) {
         super(method, url, errorListener);
         this.mListener = listener;
         this.mErrorListener = errorListener;

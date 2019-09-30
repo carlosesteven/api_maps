@@ -22,7 +22,11 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
 
-    <string name="url_guardar">http://172.16.160.110/app/accidentes/set_datos.php</string>
-    <string name="url_consultar">http://172.16.160.110/app/accidentes/get_datos.php</string>
+    <string name="url_guardar_foto">http://172.16.160.72/accidentes/archivos/sube.php</string>
+    <string name="url_guardar_datos">http://172.16.160.72/accidentes/archivos/set_datos.php</string>
+
+    <string name="url_consultar">http://172.16.160.72/accidentes/archivos/get_datos.php</string>
+
+    <string name="url_html">http://172.16.160.72/accidentes/html/paso_a_seguir.html</string>
 
 </resources>

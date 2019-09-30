@@ -3,10 +3,8 @@ package com.example.melo.UI;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 
 import androidx.annotation.NonNull;
@@ -28,21 +26,15 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static com.example.melo.Util.ConsolaDebug;
 import static com.example.melo.Util.ConsolaDebugError;
-import static com.example.melo.Util.MensajeToast;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
 
@@ -51,7 +43,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Location mLastKnownLocation;
     // CORDENADAS DE CALI
     private LatLng mDefaultLocation = new LatLng(3.4372201,-76.5224991);
-    private CameraPosition mCameraPosition;
     private boolean mLocationPermissionGranted;
 
     private boolean lanzoMapa = false;
@@ -116,8 +107,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             Double.parseDouble( actual.getString("longitud") ),
                             actual.getInt("color")
                     );
-                    ConsolaDebug("resultados ciclo", actual.toString() );
                 }
+                ConsolaDebug("resultados ciclo", datos.toString() );
             } catch (JSONException e) {
                 if (e.getMessage() != null) {
                     ConsolaDebugError("melo_consola", e.getMessage());
