@@ -14,7 +14,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.Request;
 import com.android.volley.toolbox.StringRequest;
-import com.example.melo.VOLLEY.MySingleton;
 import com.frosquivel.magicalcamera.MagicalCamera;
 import com.frosquivel.magicalcamera.MagicalPermissions;
 
@@ -23,21 +22,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.example.melo.Util.ConsolaDebug;
-import static com.example.melo.Util.ConsolaDebugError;
 
 public class ColorActivity extends AppCompatActivity {
 
     private CheckBox rojo, azul , amarillo ;
     private double longitud, latitud;
     private int color = 0;
-    private String nombreFoto;
-
 
     private MagicalCamera magicalcamera ;
     private final static  int  RESIZE_PHOTO_PIXELS_PERCENTAGE = 50;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_color);
         latitud = getIntent().getDoubleExtra("latitud", 0);
@@ -65,8 +62,10 @@ public class ColorActivity extends AppCompatActivity {
          magicalcamera = new MagicalCamera(this , RESIZE_PHOTO_PIXELS_PERCENTAGE , magicalPermissions);
 
     }
+
     @Override
-    public  void  onActivityResult(int requestCode , int resultCode , Intent data){
+    public  void  onActivityResult(int requestCode , int resultCode , Intent data)
+    {
         super.onActivityResult(requestCode , resultCode , data);
         if(resultCode==RESULT_OK){
             magicalcamera.resultPhoto(requestCode , resultCode , data);
@@ -79,7 +78,6 @@ public class ColorActivity extends AppCompatActivity {
 
     }
 
-
     private void uploadImage(final Bitmap bitmap)
     {
 
@@ -87,6 +85,7 @@ public class ColorActivity extends AppCompatActivity {
 
         final ProgressDialog pDialog = new ProgressDialog(this);
         pDialog.setMessage("Subiendo Imagen");
+        pDialog.setCancelable(false);
         pDialog.show();
 
         String URL = getString( R.string.url_guardar_foto );
@@ -116,14 +115,6 @@ public class ColorActivity extends AppCompatActivity {
         VolleyAppController.getInstance().addToRequestQueue(stringRequest);
     }
 
-
-    public byte[] getFileDataFromDrawable(Bitmap bitmap) {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 50, byteArrayOutputStream);
-        return byteArrayOutputStream.toByteArray();
-    }
-
-
     public void validar (){
         if (rojo.isChecked()){
             color = 1;
@@ -141,34 +132,6 @@ public class ColorActivity extends AppCompatActivity {
                     Toast.LENGTH_SHORT
             ).show();
         }
-    }
-
-    private void guardarDatosEnBd()
-    {
-
-        StringRequest strReq = new StringRequest(Request.Method.POST, getString(R.string.url_guardar_datos),
-                response -> {
-                    ConsolaDebug("guardarDatosEnBd", response);
-                    finish();
-                },
-                error ->
-                {
-                    if ( error != null && error.getMessage() != null ) {
-                        ConsolaDebugError("guardarDatosEnBd", error.getMessage());
-                    }
-                    ConsolaDebugError("guardarDatosEnBd", "error en volley" );
-                }){
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                params.put("longitud", String.valueOf( longitud ) );
-                params.put("latitud", String.valueOf( latitud ) );
-                params.put("color", String.valueOf( color ) );
-                params.put("foto", nombreFoto );
-                return params;
-            }
-        };
-        MySingleton.getInstance(this).addToRequestQueue(strReq);
     }
 
     public String getStringImage(Bitmap bmp) {
