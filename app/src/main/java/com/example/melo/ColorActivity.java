@@ -1,22 +1,20 @@
 package com.example.melo;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Base64;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.melo.VOLLEY.MySingleton;
-import com.example.melo.VOLLEY.VolleyMultipartRequest;
 import com.frosquivel.magicalcamera.MagicalCamera;
 import com.frosquivel.magicalcamera.MagicalPermissions;
 
@@ -82,39 +80,40 @@ public class ColorActivity extends AppCompatActivity {
     }
 
 
-    private void uploadImage(final Bitmap bitmap){
+    private void uploadImage(final Bitmap bitmap)
+    {
 
+        final String imageOne = getStringImage(bitmap);
 
-        VolleyMultipartRequest volleyMultipartRequest = new VolleyMultipartRequest(
-                Request.Method.POST,
-                getString( R.string.url_guardar_foto ),
+        final ProgressDialog pDialog = new ProgressDialog(this);
+        pDialog.setMessage("Subiendo Imagen");
+        pDialog.show();
+
+        String URL = getString( R.string.url_guardar_foto );
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST,
+                URL,
                 response -> {
-                    ConsolaDebug("uploadImage", response.toString() );
-                    guardarDatosEnBd();
-                },
-                error -> {
-                    ConsolaDebugError("uploadImage", "error en volley" );
-                    guardarDatosEnBd();
-                })
-        {
+                    pDialog.hide();
+                    ConsolaDebug("Result", response);
+                    finish();
+                }, error -> {
+                    ConsolaDebug("Error", error.getMessage());
+                    pDialog.hide();
+                }) {
             @Override
-            protected Map<String, DataPart> getByteData() {
-                Map<String, DataPart> params = new HashMap<>();
-                long imagename = System.currentTimeMillis();
-                nombreFoto = imagename + ".png";
-                params.put("archivo", new DataPart(nombreFoto, getFileDataFromDrawable(bitmap)));
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("archivo", imageOne);
+                params.put("longitud", String.valueOf( longitud ) );
+                params.put("latitud", String.valueOf( latitud ) );
+                params.put("color", String.valueOf( color ) );
                 return params;
             }
         };
 
-
-        volleyMultipartRequest.setRetryPolicy(new DefaultRetryPolicy(
-                0,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        RequestQueue rQueue = Volley.newRequestQueue(ColorActivity.this);
-        rQueue.add(volleyMultipartRequest);
-
+        //Adding request to request queue
+        VolleyAppController.getInstance().addToRequestQueue(stringRequest);
     }
 
 
@@ -170,6 +169,13 @@ public class ColorActivity extends AppCompatActivity {
             }
         };
         MySingleton.getInstance(this).addToRequestQueue(strReq);
+    }
+
+    public String getStringImage(Bitmap bmp) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] imageBytes = baos.toByteArray();
+        return Base64.encodeToString(imageBytes, Base64.DEFAULT);
     }
 
 }
