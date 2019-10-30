@@ -29,8 +29,10 @@ public class ColorActivity extends AppCompatActivity {
     private double longitud, latitud;
     private int color = 0;
 
+    static final int REQUEST_IMAGE_CAPTURE = 1;
+
     private MagicalCamera magicalcamera ;
-    private final static  int  RESIZE_PHOTO_PIXELS_PERCENTAGE = 50;
+    private final static  int  RESIZE_PHOTO_PIXELS_PERCENTAGE = 10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -47,6 +49,7 @@ public class ColorActivity extends AppCompatActivity {
                 validar()
         );
 
+
         //permisos par de la camara
         String[] permissions = new String[] {
                 Manifest.permission.CAMERA,
@@ -61,7 +64,13 @@ public class ColorActivity extends AppCompatActivity {
 
          magicalcamera = new MagicalCamera(this , RESIZE_PHOTO_PIXELS_PERCENTAGE , magicalPermissions);
 
+
+
+
     }
+
+
+
 
     @Override
     public  void  onActivityResult(int requestCode , int resultCode , Intent data)
@@ -74,9 +83,13 @@ public class ColorActivity extends AppCompatActivity {
 
             uploadImage(magicalcamera.getPhoto());
 
+
+
         }
 
     }
+
+
 
     private void uploadImage(final Bitmap bitmap)
     {
@@ -113,6 +126,7 @@ public class ColorActivity extends AppCompatActivity {
 
         //Adding request to request queue
         VolleyAppController.getInstance().addToRequestQueue(stringRequest);
+
     }
 
     public void validar (){
@@ -125,6 +139,11 @@ public class ColorActivity extends AppCompatActivity {
         }
         if ( color > 0 ) {
             magicalcamera.takePhoto();
+
+
+
+
+
         }else{
             Toast.makeText(
                     this,

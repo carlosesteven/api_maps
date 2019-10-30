@@ -18,15 +18,17 @@
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="title_activity_color">ColorActivity</string>
+    <string name="title_activity_inicio">Inicio</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
 
-    <string name="url_guardar_foto">http://172.16.160.72/accidentes/archivos/sube.php</string>
-    <string name="url_guardar_datos">http://172.16.160.72/accidentes/archivos/set_datos.php</string>
+    <string name="url_guardar_foto">http://csc-lab.xyz/accidentes/sube.php</string>
+    <string name="url_guardar_datos">http://csc-lab.xyz/accidentes/set_datos.php</string>
 
-    <string name="url_consultar">http://172.16.160.72/accidentes/archivos/get_datos.php</string>
+    <string name="url_consultar">http://csc-lab.xyz/accidentes/get_datos.php</string>
 
-    <string name="url_html">http://172.16.160.72/accidentes/html/paso_a_seguir.html</string>
+    <string name="url_html">http://csc-lab.xyz/accidentes/html/</string>
+    <string name="title_activity_maps2">Map</string>
 
 </resources>

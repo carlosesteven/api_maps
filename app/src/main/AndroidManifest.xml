@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.melo">
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
@@ -12,18 +16,15 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-
-    <!-- camara
+    <!--
+ camara
     permisos
     -->
-
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
-
     <application
-        tools:replace="android:name"
         android:name=".VolleyAppController"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -32,12 +33,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
-        tools:ignore="AllowBackup,GoogleAppIndexingWarning,UnusedAttribute">
-
-        <uses-library android:name="org.apache.http.legacy" android:required="false"/>
-
-        <activity android:name=".UI.Informacion"></activity>
-        <activity android:name=".ColorActivity" />
+        tools:ignore="AllowBackup,GoogleAppIndexingWarning,UnusedAttribute"
+        tools:replace="android:name">
+        <activity android:name=".UI.Activity_Foto"></activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -51,7 +49,18 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".UI.MapsActivity"
+            android:name=".UI.MapsActivity2"
+            android:label="@string/title_activity_maps2" />
+
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+
+        <activity android:name=".UI.MapsActivity" />
+        <activity android:name=".UI.Informacion" />
+        <activity android:name=".ColorActivity" />
+        <activity
+            android:name=".UI.Inicio"
             android:label="@string/title_activity_maps">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
