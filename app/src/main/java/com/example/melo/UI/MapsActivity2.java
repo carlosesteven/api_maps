@@ -43,6 +43,7 @@ import java.util.Map;
 
 import static com.example.melo.Util.ConsolaDebug;
 import static com.example.melo.Util.ConsolaDebugError;
+import static java.sql.Types.NULL;
 
 public class MapsActivity2 extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
 
@@ -102,26 +103,30 @@ public class MapsActivity2 extends FragmentActivity implements OnMapReadyCallbac
     private void eliminar_datos(){
 
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, "http://csc-lab.xyz/accidentes/eliminar_accidente.php", new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Toast.makeText(getApplicationContext(), "EL ACCIDENTE FUE ELIMINADO", Toast.LENGTH_SHORT).show();
-                finish();
-                startActivity( new Intent( getBaseContext(), MapsActivity2.class ));
-            }
+        if (!codigo.getText().toString().equals(NULL)  ) {
 
 
-        }, error -> Toast.makeText(getApplicationContext() , error.toString() , Toast.LENGTH_SHORT).show()){
-            @Override
-            protected Map<String ,  String> getParams() {
-                Map<String , String> parametros = new HashMap <String , String>();
-                parametros.put("id",codigo.getText().toString());
-                return parametros;
-            }
-        };
-        requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(stringRequest);
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, "http://csc-lab.xyz/accidentes/eliminar_accidente.php", new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    Toast.makeText(getApplicationContext(), "EL ACCIDENTE FUE ELIMINADO", Toast.LENGTH_SHORT).show();
+                    finish();
+                    startActivity(new Intent(getBaseContext(), MapsActivity2.class));
+                }
 
+
+            }, error -> Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show()) {
+                @Override
+                protected Map<String, String> getParams() {
+                    Map<String, String> parametros = new HashMap<String, String>();
+                    parametros.put("id", codigo.getText().toString());
+                    return parametros;
+                }
+            };
+            requestQueue = Volley.newRequestQueue(this);
+            requestQueue.add(stringRequest);
+
+        }
     }
 
 

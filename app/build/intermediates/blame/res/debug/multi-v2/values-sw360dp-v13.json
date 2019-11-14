@@ -1,0 +1,19 @@
+{
+    "logs": [
+        {
+            "outputFile": "/home/jhoan/StudioProjects/app_accidentes_android/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-sw360dp-v13/values-sw360dp-v13.xml",
+            "map": [
+                {
+                    "source": "/home/jhoan/.gradle/caches/transforms-2/files-2.1/a3b3e620f5d501227c07d076defebf15/res/values-sw360dp-v13/values-sw360dp-v13.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "71",
+                        "endOffsets": "122"
+                    }
+                }
+            ]
+        }
+    ]
+}

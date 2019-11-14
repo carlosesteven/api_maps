@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Base64;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -32,7 +33,7 @@ public class ColorActivity extends AppCompatActivity {
     static final int REQUEST_IMAGE_CAPTURE = 1;
 
     private MagicalCamera magicalcamera ;
-    private final static  int  RESIZE_PHOTO_PIXELS_PERCENTAGE = 10;
+    private final static  int  RESIZE_PHOTO_PIXELS_PERCENTAGE = 25;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -76,7 +77,7 @@ public class ColorActivity extends AppCompatActivity {
     public  void  onActivityResult(int requestCode , int resultCode , Intent data)
     {
         super.onActivityResult(requestCode , resultCode , data);
-        if(resultCode==RESULT_OK){
+        /*if(resultCode==RESULT_OK){
             magicalcamera.resultPhoto(requestCode , resultCode , data);
 
             magicalcamera.savePhotoInMemoryDevice(magicalcamera.getPhoto(), "myPhotoname","mydirectorname" , MagicalCamera.PNG , true);
@@ -84,8 +85,11 @@ public class ColorActivity extends AppCompatActivity {
             uploadImage(magicalcamera.getPhoto());
 
 
-
         }
+        */
+
+        Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+        uploadImage(bitmap);
 
     }
 
@@ -138,8 +142,11 @@ public class ColorActivity extends AppCompatActivity {
             color = 3;
         }
         if ( color > 0 ) {
-            magicalcamera.takePhoto();
+//            magicalcamera.takePhoto();
 
+            Intent in = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+            startActivityForResult(in , 0);
 
 
 

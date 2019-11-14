@@ -1,0 +1,19 @@
+{
+    "logs": [
+        {
+            "outputFile": "/home/jhoan/StudioProjects/app_accidentes_android/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-port/values-port.xml",
+            "map": [
+                {
+                    "source": "/home/jhoan/.gradle/caches/transforms-2/files-2.1/30953762fc392ee5e1215f63684693aa/res/values-port/values-port.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "55",
+                        "endOffsets": "106"
+                    }
+                }
+            ]
+        }
+    ]
+}
