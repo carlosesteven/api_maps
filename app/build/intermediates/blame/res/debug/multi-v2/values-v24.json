@@ -4,7 +4,7 @@
             "outputFile": "/home/jhoan/StudioProjects/app_accidentes_android/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-v24/values-v24.xml",
             "map": [
                 {
-                    "source": "/home/jhoan/.gradle/caches/transforms-2/files-2.1/789635ad4790b7f89255a3b07e9017ee/res/values-v24/values-v24.xml",
+                    "source": "/home/carlosesteven/.gradle/caches/transforms-2/files-2.1/389e32b749966f5486db29a1daf415ab/res/values-v24/values-v24.xml",
                     "from": {
                         "startLines": "2,3,4,5",
                         "startColumns": "4,4,4,4",
@@ -21,7 +21,7 @@
                     }
                 },
                 {
-                    "source": "/home/jhoan/.gradle/caches/transforms-2/files-2.1/30953762fc392ee5e1215f63684693aa/res/values-v24/values-v24.xml",
+                    "source": "/home/carlosesteven/.gradle/caches/transforms-2/files-2.1/33dfb9a4866105fd1afb0724d99aa090/res/values-v24/values-v24.xml",
                     "from": {
                         "startLines": "2,3",
                         "startColumns": "4,4",

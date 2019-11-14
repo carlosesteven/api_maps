@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Melo</string>
+    <string name="app_name">Accidentes_USC</string>
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_opcion">Opcion</string>
 
@@ -29,6 +29,6 @@
     <string name="url_consultar">http://csc-lab.xyz/accidentes/get_datos.php</string>
 
     <string name="url_html">http://csc-lab.xyz/accidentes/html/</string>
-    <string name="title_activity_maps2">Map</string>
+    <string name="title_activity_maps2">Accidentes_USC</string>
 
 </resources>
